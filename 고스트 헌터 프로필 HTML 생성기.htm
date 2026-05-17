@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>§(*￣▽￣*)§</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body,
+    .sticky,
+    .preview-wrap,
+    #codeOutput {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    .sticky::-webkit-scrollbar,
+    .preview-wrap::-webkit-scrollbar,
+    #codeOutput::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+
+
+    body {
+      margin: 0;
+      background: #060811;
+      color: #e8eeff;
+      font-family: 'Pretendard Variable', 'Pretendard', system-ui, sans-serif;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      padding: 34px 18px 60px;
+      background:
+        radial-gradient(circle at top left, rgba(139, 174, 255, 0.16), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(176, 136, 255, 0.13), transparent 32%),
+        #060811;
+    }
+
+    .top {
+      max-width: 1220px;
+      margin: 0 auto 24px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: #8baeff;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 5vw, 58px);
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+
+    .sub {
+      margin: 12px 0 0;
+      color: #a8b8e0;
+      line-height: 1.7;
+      font-size: 14px;
+      max-width: 680px;
+    }
+
+    .layout {
+      max-width: 1220px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(300px, 430px) 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(19, 24, 40, 0.86);
+      border: 1px solid rgba(140, 160, 220, 0.16);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(14px);
+    }
+
+    .sticky {
+      position: sticky;
+      top: 18px;
+      max-height: calc(100vh - 36px);
+      overflow: auto;
+    }
+
+    .panel-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-title strong {
+      font-size: 17px;
+    }
+
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: #6070a0;
+      letter-spacing: 2px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: #cfd9f8;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid rgba(140, 160, 220, 0.16);
+      background: #0d1120;
+      color: #e8eeff;
+      border-radius: 12px;
+      padding: 12px 13px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: rgba(139, 174, 255, 0.7);
+      box-shadow: 0 0 0 3px rgba(139, 174, 255, 0.1);
+    }
+
+    textarea {
+      min-height: 104px;
+      resize: vertical;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .format-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: -2px;
+    }
+
+    .format-btn {
+      border: 1px solid rgba(140, 160, 220, 0.16);
+      background: #0d1120;
+      color: #a8b8e0;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .format-btn:hover {
+      color: #ffffff;
+      border-color: rgba(139, 174, 255, 0.58);
+      background: rgba(139, 174, 255, 0.12);
+    }
+
+    .format-btn.point {
+      color: #f0c060;
+      border-color: rgba(240, 192, 96, 0.28);
+      background: rgba(240, 192, 96, 0.08);
+    }
+
+    .help {
+      margin-top: -3px;
+      font-size: 11px;
+      color: #6070a0;
+      line-height: 1.5;
+    }
+
+    .check-list {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid rgba(140, 160, 220, 0.16);
+      background: #0d1120;
+      border-radius: 14px;
+    }
+
+    .check-list label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      color: #a8b8e0;
+    }
+
+    .check-list input[type="checkbox"] {
+      width: auto;
+      accent-color: #8baeff;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      color: #ffffff;
+      background: linear-gradient(135deg, #8baeff, #b088ff);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 900;
+      box-shadow: 0 14px 32px rgba(139, 174, 255, 0.16);
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn.secondary {
+      background: #0d1120;
+      color: #a8b8e0;
+      border: 1px solid rgba(140, 160, 220, 0.16);
+      box-shadow: none;
+    }
+
+    .right-col {
+      display: grid;
+      gap: 18px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tab {
+      border: 1px solid rgba(140, 160, 220, 0.16);
+      background: #0d1120;
+      color: #a8b8e0;
+      border-radius: 999px;
+      padding: 9px 13px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .tab.active {
+      color: #ffffff;
+      border-color: rgba(139, 174, 255, 0.72);
+      background: rgba(139, 174, 255, 0.14);
+    }
+
+    .preview-wrap {
+      overflow: auto;
+      max-height: 760px;
+      border-radius: 18px;
+      border: 1px solid rgba(140, 160, 220, 0.1);
+      background: #080b12;
+      padding: 18px;
+    }
+
+    #codeOutput {
+      width: 100%;
+      min-height: 560px;
+      white-space: pre;
+      overflow: auto;
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #c9d6ff;
+      background: #080b12;
+      border: 1px solid rgba(140, 160, 220, 0.1);
+      border-radius: 18px;
+      padding: 18px;
+      resize: vertical;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      background: #e8eeff;
+      color: #080b12;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-size: 13px;
+      font-weight: 900;
+      transition: 0.2s ease;
+      z-index: 99;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sticky {
+        position: static;
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .two {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 14px;
+        border-radius: 18px;
+      }
+
+      .preview-wrap {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="top">
+      <div>
+        <div class="eyebrow">Phantom Bay Tool</div>
+        <h1>고스트 헌터 프로필 HTML 생성기</h1>
+        <br>
+      </div>
+      <div class="actions">
+        <button class="btn" id="copyTopBtn" type="button">HTML 복사</button>
+        <button class="btn secondary" id="resetBtn" type="button">초기화</button>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="panel sticky">
+        <div class="panel-title">
+          <span class="badge">EDIT DATA</span>
+        </div>
+
+        <div class="form-grid">
+          <div class="two">
+            <label>아이콘
+              <input id="icon" value="🗡️" maxlength="4" />
+            </label>
+            <label>랭크
+              <select id="rank">
+                <option value="F">F 랭크 · 견습 헌터</option>
+                <option value="E">E 랭크 · 일반 헌터</option>
+                <option value="D">D 랭크 · 숙련 헌터</option>
+                <option value="C">C 랭크 · 상급 헌터</option>
+                <option value="B">B 랭크 · 엘리트 헌터</option>
+                <option value="A" selected>A 랭크 · 재난 대응급</option>
+                <option value="S">S 랭크 · 도시 방위급</option>
+                <option value="EX">EX 랭크 · 특급 헌터</option>
+              </select>
+            </label>
+          </div>
+
+          <label>이름
+            <input id="name" value="린 블레어" />
+          </label>
+
+          <label>구분
+            <select id="hunterType">
+              <option value="Phantom Bay Registered Individual Ghost Hunter">개인 헌터</option>
+              <option value="Phantom Bay Registered Government Ghost Hunter">정부 헌터</option>
+              <option value="Phantom Bay Illegality Ghost Hunter">불법 헌터</option>
+              <option value="Phantom Bay Registered Corporation Ghost Hunter">기업 헌터</option>
+              <option value="Phantom Bay Registered Blacklist Ghost Hunter">블랙리스트 헌터</option>
+            </select>
+          </label>
+
+          <div class="two">
+            <label>나이
+              <input id="age" value="29세" />
+            </label>
+            <label>등록 번호
+              <input id="number" value="LB-1031A-777" />
+            </label>
+          </div>
+
+          <label>소속
+            <input id="team" value="고스트 헌터 사무소 문릿" />
+          </label>
+
+          <label>사진
+            <input id="image" value="https://i.ibb.co/M5nKjqPp/IMG-6675.jpg" />
+            <span class="help">비워두면 기본 아이콘</span>
+          </label>
+
+          <label>대사
+            <textarea id="quote">겁쟁이 해결사, A랭크 개인 헌터 린 블레어.</textarea>
+          </label>
+          <div class="format-toolbar" data-target="quote">
+            <button class="format-btn" type="button" data-start="[b]" data-end="[/b]">볼드</button>
+            <button class="format-btn" type="button" data-start="[i]" data-end="[/i]">이텔릭</button>
+            <button class="format-btn point" type="button" data-start="[point]" data-end="[/point]">포인트</button>
+          </div>
+
+          <label>성격
+            <input id="tags" value="겁쟁이, 책임감, 허당" />
+          </label>
+
+          <label>소개
+            <textarea id="intro">[point]린 블레어.[/point]
+기업이나 다른 헌터와의 교류를 일절 거부하고 단독으로 활동하며, 과묵하고 신비로운 태도 때문에 [b]신비주의 헌터[/b]라는 평이 많은 A랭크 고스트 헌터.
+
+하지만, 현실은...
+
+"아, 안 무서워… 하나도 안 무섭다… 이건 그냥 일일 뿐이야. 일. 랭크가 아깝지, 린 블레어. 정신 차려. 어? 알겠냐고."
+"아, 깜짝이야!!! 아, 진짜! 예고 좀 하고 나타나라고!! 심장 떨어질 뻔했네…!"
+"아, 왜, 왜 또!! 아까 끝난 거 아니었어요?! 나한테 왜 이래요! 내가 뭘 그렇게 잘못했는데! 아, 알았어! 알았다고! 잡으면 될 거 아냐!!"
+
+그야말로 [point]고스트가 무서운 겁쟁이.[/point]</textarea>
+          </label>
+          <div class="format-toolbar" data-target="intro">
+            <button class="format-btn" type="button" data-start="[b]" data-end="[/b]">볼드</button>
+            <button class="format-btn" type="button" data-start="[i]" data-end="[/i]">이텔릭</button>
+            <button class="format-btn point" type="button" data-start="[point]" data-end="[/point]">포인트</button>
+            <button class="format-btn" type="button" data-start="\n[hr]\n" data-end="">구분선</button>
+          </div>
+
+          <div class="check-list">
+            <label><input id="showWeapon" type="checkbox" checked /> 주무기</label>
+            <label><input id="showAbility" type="checkbox" checked /> 특수 능력</label>
+            <label><input id="showWeakness" type="checkbox" checked /> 약점</label>
+          </div>
+
+          <label>제목
+            <input id="weaponTitle" value="주무기" />
+          </label>
+          <div class="two">
+            <label>이모지
+              <input id="weaponIcon" value="🗡️" maxlength="4" />
+            </label>
+            <label>영어
+              <input id="weaponLabel" value="WEAPON" />
+            </label>
+          </div>
+          <label>내용
+            <textarea id="weapon">고스트 코어로 작동하는 검, 총, 부적, 장비 등을 적어줘.</textarea>
+          </label>
+          <div class="format-toolbar" data-target="weapon">
+            <button class="format-btn" type="button" data-start="[b]" data-end="[/b]">볼드</button>
+            <button class="format-btn" type="button" data-start="[i]" data-end="[/i]">이텔릭</button>
+            <button class="format-btn point" type="button" data-start="[point]" data-end="[/point]">포인트</button>
+          </div>
+
+          <label>제목
+            <input id="abilityTitle" value="특수능력" />
+          </label>
+          <div class="two">
+            <label>이모지
+              <input id="abilityIcon" value="✨" maxlength="4" />
+            </label>
+            <label>영어
+              <input id="abilityLabel" value="ABILITY" />
+            </label>
+          </div>
+          <label>내용
+            <textarea id="ability">고스트 감지, 결계 파괴, 영혼 안정화 같은 능력을 넣으면 좋아.</textarea>
+          </label>
+          <div class="format-toolbar" data-target="ability">
+            <button class="format-btn" type="button" data-start="[b]" data-end="[/b]">볼드</button>
+            <button class="format-btn" type="button" data-start="[i]" data-end="[/i]">이텔릭</button>
+            <button class="format-btn point" type="button" data-start="[point]" data-end="[/point]">포인트</button>
+          </div>
+
+          <label>제목
+            <input id="weaknessTitle" value="약점" />
+          </label>
+          <div class="two">
+            <label>이모지
+              <input id="weaknessIcon" value="⚠️" maxlength="4" />
+            </label>
+            <label>영어
+              <input id="weaknessLabel" value="WEAKNESS" />
+            </label>
+          </div>
+          <label>내용
+            <textarea id="weakness">체력 소모가 크다거나, 특정 등급 이상에게는 능력이 불안정하다거나.</textarea>
+          </label>
+          <div class="format-toolbar" data-target="weakness">
+            <button class="format-btn" type="button" data-start="[b]" data-end="[/b]">볼드</button>
+            <button class="format-btn" type="button" data-start="[i]" data-end="[/i]">이텔릭</button>
+            <button class="format-btn point" type="button" data-start="[point]" data-end="[/point]">포인트</button>
+          </div>
+
+          <div class="two">
+            <label>POWER
+              <input id="power" type="number" min="0" max="100" value="86" />
+            </label>
+            <label>SPEED
+              <input id="speed" type="number" min="0" max="100" value="72" />
+            </label>
+          </div>
+
+          <div class="two">
+            <label>SENSE
+              <input id="sense" type="number" min="0" max="100" value="94" />
+            </label>
+            <label>CONTROL
+              <input id="control" type="number" min="0" max="100" value="68" />
+            </label>
+          </div>
+        </div>
+      </aside>
+
+      <section class="right-col">
+        <div class="panel">
+          <div class="panel-title">
+            <span class="badge">§(*￣▽￣*)§</span>
+          </div>
+          <div class="tabs">
+            <button class="tab active" data-tab="preview" type="button">미리보기</button>
+            <button class="tab" data-tab="code" type="button">HTML</button>
+          </div>
+          <div id="previewPanel" class="preview-wrap">
+            <div id="preview"></div>
+          </div>
+          <textarea id="codeOutput" class="hidden" readonly></textarea>
+          <div class="actions">
+            <button class="btn" id="copyBtn" type="button">HTML 복사</button>
+            <button class="btn secondary" id="selectBtn" type="button">코드 전체 선택</button>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">§(*￣▽￣*)§</div>
+
+  <script>
+    const fields = [
+      'icon', 'name', 'hunterType', 'age', 'rank', 'number', 'team', 'image', 'quote', 'tags',
+      'intro', 'showWeapon', 'weaponTitle', 'weaponIcon', 'weaponLabel', 'weapon', 'showAbility', 'abilityTitle', 'abilityIcon', 'abilityLabel', 'ability', 'showWeakness', 'weaknessTitle', 'weaknessIcon', 'weaknessLabel', 'weakness', 'power', 'speed', 'sense', 'control'
+    ];
+
+    const defaults = Object.fromEntries(fields.map((id) => {
+      const element = document.getElementById(id);
+      return [id, element.type === 'checkbox' ? element.checked : element.value];
+    }));
+
+    const get = (id) => document.getElementById(id).value.trim();
+    const checked = (id) => document.getElementById(id).checked;
+
+    const rankData = {
+      F: { label: 'F 랭크', title: '견습 헌터', desc: '신입. 단독 의뢰 금지, 선임 동행 필수. 가장 사망률 높은 시기.', color: '#a0a8c0' },
+      E: { label: 'E 랭크', title: '일반 헌터', desc: 'D~C급 사건 담당. 프리랜서 활동 가능. 대부분의 개인 헌터 랭크.', color: '#a0a8c0' },
+      D: { label: 'D 랭크', title: '숙련 헌터', desc: 'C급 메인 담당. 원한형 고스트 조사. 신입 교육 참여 가능.', color: '#7abfff' },
+      C: { label: 'C 랭크', title: '상급 헌터', desc: 'B급 사건 담당. 이름이 알려지기 시작하며 팬층이 형성된다.', color: '#7abfff' },
+      B: { label: 'B 랭크', title: '엘리트 헌터', desc: 'A급 지역 진입 가능. 기업 간 스카우트 경쟁. 시민 인지도 매우 높음.', color: '#f0c060' },
+      A: { label: 'A 랭크', title: '재난 대응급', desc: 'A급 고스트 단독 대응. 국가 관리 대상. GMH가 행동 기록을 지속 감시.', color: '#ff7070' },
+      S: { label: 'S 랭크', title: '도시 방위급', desc: '단독 작전 권한 보유. 대형 사건 시 GMH 작전 통제 하에 움직임. S급 고스트의 존재 등 일부 기밀 접근 가능.', color: '#b088ff' },
+      EX: { label: 'EX 랭크', title: '특급 헌터', desc: '도시 하나를 혼자 방어 가능하다고 평가.', color: '#5de0b8' }
+    };
+
+    function getRankInfo() {
+      return rankData[get('rank')] || rankData.A;
+    }
+
+    const escapeHtml = (value) => String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+
+    function richText(value) {
+      return escapeHtml(value)
+        .replaceAll('[b]', '<span style="font-weight:900; color:#ffffff;">')
+        .replaceAll('[/b]', '</span>')
+        .replaceAll('[i]', '<span style="font-style:italic;">')
+        .replaceAll('[/i]', '</span>')
+        .replaceAll('[point]', '<span style="color:#8baeff; font-weight:900; text-shadow:0 0 14px rgba(139,174,255,0.32);">')
+        .replaceAll('[/point]', '</span>')
+        .replaceAll('[hr]', '<div style="height:1px; background:linear-gradient(to right,transparent,rgba(140,160,220,0.28),transparent); margin:22px 0;"></div>')
+        .replace(/\n/g, '<br>');
+    }
+
+    const nl2br = richText;
+
+    const clamp = (value) => {
+      const number = Number(value);
+      if (Number.isNaN(number)) return 0;
+      return Math.max(0, Math.min(100, number));
+    };
+
+    function makeTagHtml() {
+      return get('tags')
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+        .map((tag, index) => {
+          const featured = index === 0;
+          return `<span style="font-size:11px; padding:4px 10px; border-radius:20px; border:1px solid ${featured ? 'rgba(176,136,255,0.35)' : 'rgba(140,160,220,0.22)'}; color:${featured ? '#d7c6ff' : '#a8b8e0'}; background:${featured ? 'rgba(176,136,255,0.08)' : 'rgba(140,174,255,0.05)'};">${escapeHtml(tag)}</span>`;
+        })
+        .join('\n          ');
+    }
+
+    function makePortraitHtml() {
+      const image = get('image');
+      if (!image) {
+        return `<div style="width:160px; min-height:210px; border-radius:16px; background:#0d1120; border:1px solid rgba(140,174,255,0.22); display:flex; align-items:center; justify-content:center; font-size:72px; flex-shrink:0;">👻</div>`;
+      }
+      return `<div style="width:160px; height:210px; border-radius:16px; background:#0d1120; border:1px solid rgba(140,174,255,0.22); overflow:hidden; flex-shrink:0;">
+        <img src="${escapeHtml(image)}" alt="증명사진" style="width:100%; height:100%; object-fit:cover; display:block;">
+      </div>`;
+    }
+
+    function statRow(label, id) {
+      const value = clamp(get(id));
+      return `<div style="display:grid; grid-template-columns:90px 1fr 36px; gap:12px; align-items:center;">
+        <div style="font-family:'DM Mono',monospace; font-size:11px; color:#6070a0; letter-spacing:2px;">${label}</div>
+        <div style="height:8px; background:#0d1120; border-radius:99px; border:1px solid rgba(140,160,220,0.08); overflow:hidden;">
+          <div style="height:100%; width:${value}%; background:linear-gradient(to right,#8baeff,#b088ff); border-radius:99px;"></div>
+        </div>
+        <div style="font-family:'DM Mono',monospace; font-size:11px; color:#a8b8e0;">${value}</div>
+      </div>`;
+    }
+
+    function makeDetailSection(title, id, icon, label) {
+      return `<div style="height:1px; background:linear-gradient(to right,transparent,rgba(140,160,220,0.22),transparent); margin:34px 0;"></div>
+
+  <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+    <div style="font-size:18px; width:34px; height:34px; background:rgba(140,174,255,0.07); border:1px solid rgba(140,160,220,0.2); border-radius:8px; display:flex; align-items:center; justify-content:center;">${escapeHtml(icon || '◆')}</div>
+    <span style="font-size:17px; font-weight:700; color:#e8eeff;">${escapeHtml(title)}</span>
+    <span style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:#6070a0;">${escapeHtml(label || '')}</span>
+  </div>
+  <div style="background:#131828; border:1px solid rgba(140,160,220,0.1); border-radius:14px; padding:18px; margin-bottom:12px;">
+    <div style="font-size:13px; line-height:2; color:#a8b8e0;">${nl2br(get(id))}</div>
+  </div>`;
+    }
+
+    function makeCustomSectionsHtml() {
+      const sections = [];
+      if (checked('showWeapon')) sections.push(makeDetailSection(get('weaponTitle') || '주무기', 'weapon', get('weaponIcon') || '🗡️', get('weaponLabel') || 'WEAPON'));
+      if (checked('showAbility')) sections.push(makeDetailSection(get('abilityTitle') || '특수능력', 'ability', get('abilityIcon') || '✨', get('abilityLabel') || 'ABILITY'));
+      if (checked('showWeakness')) sections.push(makeDetailSection(get('weaknessTitle') || '약점', 'weakness', get('weaknessIcon') || '⚠️', get('weaknessLabel') || 'WEAKNESS'));
+      return sections.join('\n\n  ');
+    }
+
+    function cleanHtml(html) {
+      return html
+        .replace(/\n[ \t]*\n[ \t]*\n+/g, '\n\n')
+        .trim();
+    }
+
+    function buildHtml() {
+      const name = escapeHtml(get('name') || '캐릭터 이름');
+      const rankInfo = getRankInfo();
+      const rankLabel = escapeHtml(rankInfo.label);
+      const rankTitle = escapeHtml(rankInfo.title);
+      const rankDesc = escapeHtml(rankInfo.desc);
+      const rankColor = escapeHtml(rankInfo.color);
+      const hunterType = escapeHtml(get('hunterType') || 'Phantom Bay Registered Individual Ghost Hunter');
+
+      return cleanHtml(`<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+<div style="background:#080b12; color:#e8eeff; font-family:'Pretendard Variable','Pretendard',sans-serif; padding:42px 22px 60px; max-width:780px; margin:0 auto; position:relative; overflow:hidden;">
+  <div style="text-align:center; padding:20px 0 34px;">
+    <div style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:6px; color:#6070a0; text-transform:uppercase; margin-bottom:12px;">
+      PHANTOM BAY · HUNTER PROFILE
+    </div>
+    <div style="font-size:58px; margin-bottom:8px;">
+      ${escapeHtml(get('icon') || '🗡️')}
+    </div>
+    <div style="font-weight:900; font-size:58px; letter-spacing:-2px; color:#ffffff; line-height:1;">
+      ${name}
+    </div>
+    <div style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:4px; color:#8baeff; margin-top:12px;">
+      ${hunterType}
+    </div>
+    <div style="max-width:520px; margin:24px auto 0; padding:16px 20px; border:1px solid rgba(140,160,220,0.15); border-radius:14px; background:#131828; color:#a8b8e0; font-size:14px; line-height:2;">
+      “${nl2br(get('quote'))}”
+    </div>
+  </div>
+
+  <div style="height:1px; background:linear-gradient(to right,transparent,rgba(140,160,220,0.22),transparent); margin:34px 0;"></div>
+
+  <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+    <div style="font-size:18px; width:34px; height:34px; background:rgba(140,174,255,0.07); border:1px solid rgba(140,160,220,0.2); border-radius:8px; display:flex; align-items:center; justify-content:center;">🪪</div>
+    <span style="font-size:17px; font-weight:700; color:#e8eeff;">기본 정보</span>
+    <span style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:#6070a0;">PROFILE</span>
+  </div>
+
+  <div style="background:#131828; border:1px solid rgba(140,160,220,0.1); border-radius:14px; padding:18px; margin-bottom:12px;">
+    <div style="display:flex; gap:18px; flex-wrap:wrap;">
+      ${makePortraitHtml()}
+      <div style="flex:1; min-width:240px;">
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:grid; grid-template-columns:92px 1fr; gap:10px; padding:10px 12px; border-radius:10px; background:#0d1120; border:1px solid rgba(140,160,220,0.08);">
+            <div style="font-family:'DM Mono',monospace; font-size:11px; color:#6070a0; letter-spacing:2px;">NAME</div>
+            <div style="font-size:13px; color:#a8b8e0; line-height:1.7;">${name}</div>
+          </div>
+          <div style="display:grid; grid-template-columns:92px 1fr; gap:10px; padding:10px 12px; border-radius:10px; background:#0d1120; border:1px solid rgba(140,160,220,0.08);">
+            <div style="font-family:'DM Mono',monospace; font-size:11px; color:#6070a0; letter-spacing:2px;">AGE</div>
+            <div style="font-size:13px; color:#a8b8e0; line-height:1.7;">${escapeHtml(get('age'))}</div>
+          </div>
+          <div style="display:grid; grid-template-columns:92px 1fr; gap:10px; padding:10px 12px; border-radius:10px; background:#0d1120; border:1px solid rgba(140,160,220,0.08);">
+            <div style="font-family:'DM Mono',monospace; font-size:11px; color:#6070a0; letter-spacing:2px;">RANK</div>
+            <div style="font-size:13px; color:#a8b8e0; line-height:1.7;">
+              <span style="color:${rankColor}; font-weight:900;">${rankLabel}</span> · ${rankTitle}
+              <div style="font-size:11px; color:#6070a0; line-height:1.7; margin-top:2px;">${rankDesc}</div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:92px 1fr; gap:10px; padding:10px 12px; border-radius:10px; background:#0d1120; border:1px solid rgba(140,160,220,0.08);">
+            <div style="font-family:'DM Mono',monospace; font-size:11px; color:#6070a0; letter-spacing:2px;">NUMBER</div>
+            <div style="font-size:13px; color:#a8b8e0; line-height:1.7;">${escapeHtml(get('number'))}</div>
+          </div>
+          <div style="display:grid; grid-template-columns:92px 1fr; gap:10px; padding:10px 12px; border-radius:10px; background:#0d1120; border:1px solid rgba(140,160,220,0.08);">
+            <div style="font-family:'DM Mono',monospace; font-size:11px; color:#6070a0; letter-spacing:2px;">TEAM</div>
+            <div style="font-size:13px; color:#a8b8e0; line-height:1.7;">${escapeHtml(get('team'))}</div>
+          </div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:7px; margin-top:14px;">
+          ${makeTagHtml()}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:1px; background:linear-gradient(to right,transparent,rgba(140,160,220,0.22),transparent); margin:34px 0;"></div>
+
+  <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+    <div style="font-size:18px; width:34px; height:34px; background:rgba(140,174,255,0.07); border:1px solid rgba(140,160,220,0.2); border-radius:8px; display:flex; align-items:center; justify-content:center;">🌫️</div>
+    <span style="font-size:17px; font-weight:700; color:#e8eeff;">소개</span>
+    <span style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:#6070a0;">INTRODUCTION</span>
+  </div>
+  <div style="background:#131828; border:1px solid rgba(140,160,220,0.1); border-radius:14px; padding:18px; margin-bottom:12px;">
+    <div style="font-size:13px; line-height:2; color:#a8b8e0;">${nl2br(get('intro'))}</div>
+  </div>
+
+  ${makeCustomSectionsHtml()}
+
+  <div style="height:1px; background:linear-gradient(to right,transparent,rgba(140,160,220,0.22),transparent); margin:34px 0;"></div>
+
+  <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+    <div style="font-size:18px; width:34px; height:34px; background:rgba(140,174,255,0.07); border:1px solid rgba(140,160,220,0.2); border-radius:8px; display:flex; align-items:center; justify-content:center;">📊</div>
+    <span style="font-size:17px; font-weight:700; color:#e8eeff;">능력치</span>
+    <span style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:#6070a0;">STATUS</span>
+  </div>
+  <div style="background:#131828; border:1px solid rgba(140,160,220,0.1); border-radius:14px; padding:18px;">
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      ${statRow('POWER', 'power')}
+      ${statRow('SPEED', 'speed')}
+      ${statRow('SENSE', 'sense')}
+      ${statRow('CONTROL', 'control')}
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:48px; padding-top:24px; border-top:1px solid rgba(140,160,220,0.1);">
+    <div style="font-size:28px; opacity:0.25; margin-bottom:6px;">👻</div>
+    <div style="font-family:'DM Mono',monospace; font-size:10px; color:#6070a0; letter-spacing:3px;">PHANTOM BAY · GMH · CHARACTER PROFILE</div>
+  </div>
+</div>`);
+    }
+
+    function render() {
+      const html = buildHtml();
+      document.getElementById('preview').innerHTML = html;
+      document.getElementById('codeOutput').value = html;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1500);
+    }
+
+    async function copyCode() {
+      const code = document.getElementById('codeOutput').value;
+      try {
+        await navigator.clipboard.writeText(code);
+        showToast('HTML 복사했어');
+      } catch (error) {
+        document.getElementById('codeOutput').classList.remove('hidden');
+        document.getElementById('previewPanel').classList.add('hidden');
+        document.querySelectorAll('.tab').forEach((tab) => tab.classList.toggle('active', tab.dataset.tab === 'code'));
+        document.getElementById('codeOutput').select();
+        showToast('선택했어. 직접 복사해줘');
+      }
+    }
+
+    fields.forEach((id) => {
+      document.getElementById(id).addEventListener('input', render);
+      document.getElementById(id).addEventListener('change', render);
+    });
+
+    document.querySelectorAll('.format-toolbar').forEach((toolbar) => {
+      const target = document.getElementById(toolbar.dataset.target);
+      toolbar.querySelectorAll('.format-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+          const startTag = button.dataset.start;
+          const endTag = button.dataset.end;
+          const start = target.selectionStart;
+          const end = target.selectionEnd;
+          const isDivider = startTag.includes('[hr]');
+          const selected = isDivider ? '' : (target.value.slice(start, end) || '강조할 문장');
+          target.value = `${target.value.slice(0, start)}${startTag}${selected}${endTag}${target.value.slice(end)}`;
+          target.focus();
+          if (isDivider) {
+            target.setSelectionRange(start + startTag.length, start + startTag.length);
+          } else {
+            target.setSelectionRange(start + startTag.length, start + startTag.length + selected.length);
+          }
+          render();
+        });
+      });
+    });
+
+    document.querySelectorAll('.tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const mode = tab.dataset.tab;
+        document.querySelectorAll('.tab').forEach((item) => item.classList.toggle('active', item === tab));
+        document.getElementById('previewPanel').classList.toggle('hidden', mode !== 'preview');
+        document.getElementById('codeOutput').classList.toggle('hidden', mode !== 'code');
+      });
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', copyCode);
+    document.getElementById('copyTopBtn').addEventListener('click', copyCode);
+
+    document.getElementById('selectBtn').addEventListener('click', () => {
+      const code = document.getElementById('codeOutput');
+      document.getElementById('previewPanel').classList.add('hidden');
+      code.classList.remove('hidden');
+      document.querySelectorAll('.tab').forEach((tab) => tab.classList.toggle('active', tab.dataset.tab === 'code'));
+      code.focus();
+      code.select();
+      showToast('코드 전체 선택했어');
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      fields.forEach((id) => {
+        const element = document.getElementById(id);
+        if (element.type === 'checkbox') {
+          element.checked = defaults[id];
+        } else {
+          element.value = defaults[id];
+        }
+      });
+      render();
+      showToast('처음 값으로 돌렸어');
+    });
+
+    render();
+  </script>
+</body>
+</html>
